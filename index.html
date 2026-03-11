@@ -5,222 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zenit Empire</title>
     <style>
-        :root {
-            --neon-blue: #00f2ff;
-            --neon-pink: #ff00d4;
-            --bg-dark: #05050a;
-            --card-bg: #10101a;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* Cabecera con Saldos */
-        #top-bar {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: linear-gradient(180deg, #1a1a2e 0%, var(--bg-dark) 100%);
-            border-bottom: 1px solid var(--neon-blue);
-        }
-
-        .balance-box {
-            text-align: center;
-        }
-
-        .balance-val {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--neon-blue);
-        }
-
-        .balance-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #888;
-        }
-
-        /* Pantallas */
-        #content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 100px;
-        }
-
+        :root { --n-blue: #00f2ff; --n-pink: #ff00d4; --bg: #05050a; --card: #10101a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        #top-bar { display: flex; justify-content: space-around; padding: 15px; background: #1a1a2e; border-bottom: 1px solid var(--n-blue); }
+        .balance-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--n-blue); }
+        .balance-label { font-size: 0.6rem; text-transform: uppercase; color: #888; }
+        #content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
         .page { display: none; }
         .active { display: block; }
-
-        /* Estilo Mina */
-        #mina-screen { text-align: center; }
-        .main-crystal {
-            width: 250px;
-            margin: 30px auto;
-            filter: drop-shadow(0 0 20px var(--neon-blue));
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        /* Estilo Tienda (Tarjetas de Drones) */
-        .drone-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            border: 1px solid #222;
-        }
-
-        .drone-img {
-            width: 70px;
-            height: 70px;
-            background: #1a1a2e;
-            border-radius: 12px;
-            margin-right: 15px;
-        }
-
-        .drone-info { flex-grow: 1; }
-        .drone-name { font-weight: bold; color: var(--neon-pink); }
-        .drone-stats { font-size: 0.8rem; color: #aaa; }
-
-        .btn-buy {
-            background: linear-gradient(45deg, var(--neon-blue), #0066ff);
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Navegación Inferior */
-        #nav-bar {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 80px;
-            background: #0a0a15;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #222;
-        }
-
-        .nav-item {
-            text-align: center;
-            color: #555;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .nav-item.active {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .nav-icon { font-size: 1.5rem; display: block; }
+        .drone-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; }
+        .info { flex-grow: 1; margin-left: 10px; }
+        .name { color: var(--n-pink); font-weight: bold; display: block; font-size: 0.9rem; }
+        .stats { font-size: 0.75rem; color: #aaa; }
+        .btn { background: var(--n-blue); border: none; color: black; padding: 8px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; min-width: 80px; }
+        .crystal { width: 160px; display: block; margin: 20px auto; filter: drop-shadow(0 0 15px var(--n-blue)); }
+        #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; }
+        .nav-item { text-align: center; color: #555; font-size: 0.7rem; cursor: pointer; }
+        .nav-item.active { color: var(--n-blue); }
+        .nav-icon { font-size: 1.4rem; display: block; }
     </style>
 </head>
 <body>
 
 <div id="top-bar">
-    <div class="balance-box">
-        <span class="balance-val" id="plata-display">1000</span>
-        <span class="balance-label">Plata (Compra)</span>
-    </div>
-    <div class="balance-box">
-        <span class="balance-val" id="oro-display">0.00</span>
-        <span class="balance-label">Oro (Retiro)</span>
-    </div>
+    <div class="balance-box"><span class="balance-val">1000</span><span class="balance-label">Plata (Compras)</span></div>
+    <div class="balance-box"><span class="balance-val">0.00</span><span class="balance-label">Oro (Retiro)</span></div>
 </div>
 
 <div id="content">
     <div id="tab-mina" class="page active">
-        <div id="mina-screen">
-            <h2>NÚCLEO ZENIT</h2>
-            <img src="cristal.png" alt="Cristal Central" class="main-crystal">
-            <p style="color: #888;">Tus drones están extrayendo cristales...</p>
+        <h2 style="text-align:center">NÚCLEO ZENIT</h2>
+        <img src="https://cdn-icons-png.flaticon.com/512/6164/6164344.png" class="crystal">
+        <div class="drone-card" style="justify-content:center; text-align:center">
+            <div class="info"><span class="name">Cristales Minados</span><span style="font-size:1.5rem">0.00</span></div>
         </div>
     </div>
 
     <div id="tab-tienda" class="page">
-        <h2>CENTRO DE TECNOLOGÍA</h2>
-        
-        <div class="drone-card">
-            <div class="drone-img"></div>
-            <div class="drone-info">
-                <span class="drone-name">Dron Iniciado (Nivel 1)</span><br>
-                <span class="drone-stats">Prod: 42 cristales/h</span>
-            </div>
-            <button class="btn-buy">1000 P</button>
-        </div>
+        <h2 style="color:var(--n-blue)">TIENDA DE DRONES</h2>
+        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 1 (Iniciado)</span><span class="stats">Prod: 42/h</span></div><button class="btn">1,000 P</button></div>
+        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 2 (Scout - $3)</span><span class="stats">Prod: 221/h</span></div><button class="btn">30,000 P</button></div>
+        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 3 (Carga - $5)</span><span class="stats">Prod: 1,160/h</span></div><button class="btn">55,000 P</button></div>
+        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 4 (Elite - $12)</span><span class="stats">Prod: 6,091/h</span></div><button class="btn">150,000 P</button></div>
+        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 5 (Supremo - $25)</span><span class="stats">Prod: 31,979/h</span></div><button class="btn">625,000 P</button></div>
+    </div>
 
-        <div class="drone-card">
-            <div class="drone-img"></div>
-            <div class="drone-info">
-                <span class="drone-name">Dron Scout (Nivel 2)</span><br>
-                <span class="drone-stats">Prod: 221 cristales/h</span>
-            </div>
-            <button class="btn-buy">5000 P</button>
-        </div>
+    <div id="tab-almacen" class="page">
+        <h2>ALMACÉN</h2>
+        <button class="btn" style="width:100%; padding:15px; margin-bottom:10px">RECOLECTAR CRISTALES</button>
+        <button class="btn" style="width:100%; padding:15px; background:var(--n-pink); color:white">VENDER (70% PLATA / 30% ORO)</button>
+    </div>
 
-        <div class="drone-card">
-            <div class="drone-img"></div>
-            <div class="drone-info">
-                <span class="drone-name">Dron Carga (Nivel 3)</span><br>
-                <span class="drone-stats">Prod: 1160 cristales/h</span>
-            </div>
-            <button class="btn-buy">25000 P</button>
-        </div>
+    <div id="tab-tareas" class="page">
+        <h2>TAREAS</h2>
+        <div class="drone-card"><div class="info"><span class="name">Referidos</span><span class="stats">Gana 500 Plata por amigo</span></div><button class="btn">INVITAR</button></div>
+    </div>
+
+    <div id="tab-menu" class="page">
+        <h2>MENÚ</h2>
+        <div class="drone-card"><div class="info"><span class="name">🔄 Intercambiador</span><span class="stats">Pasar Oro a Plata (+20%)</span></div></div>
+        <div class="drone-card"><div class="info"><span class="name">💳 Billetera</span><span class="stats">Retiros y Recargas</span></div></div>
     </div>
 </div>
 
 <nav id="nav-bar">
-    <div class="nav-item active" onclick="showTab('tab-mina', this)">
-        <span class="nav-icon">⛏️</span><span>Mina</span>
-    </div>
-    <div class="nav-item" onclick="showTab('tab-tienda', this)">
-        <span class="nav-icon">🛒</span><span>Tienda</span>
-    </div>
-    <div class="nav-item">
-        <span class="nav-icon">📦</span><span>Almacén</span>
-    </div>
-    <div class="nav-item">
-        <span class="nav-icon">📋</span><span>Tareas</span>
-    </div>
-    <div class="nav-item">
-        <span class="nav-icon">🔳</span><span>Menú</span>
-    </div>
+    <div class="nav-item active" onclick="showTab('tab-mina', this)"><span class="nav-icon">⛏️</span>Mina</div>
+    <div class="nav-item" onclick="showTab('tab-tienda', this)"><span class="nav-icon">🛒</span>Tienda</div>
+    <div class="nav-item" onclick="showTab('tab-almacen', this)"><span class="nav-icon">📦</span>Almacén</div>
+    <div class="nav-item" onclick="showTab('tab-tareas', this)"><span class="nav-icon">📋</span>Tareas</div>
+    <div class="nav-item" onclick="showTab('tab-menu', this)"><span class="nav-icon">🔳</span>Menú</div>
 </nav>
 
 <script>
     function showTab(tabId, element) {
-        // Ocultar todas las páginas
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        // Quitar estado activo de navegación
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        
-        // Mostrar la seleccionada
         document.getElementById(tabId).classList.add('active');
         element.classList.add('active');
     }
 </script>
-
 </body>
 </html>
