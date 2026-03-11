@@ -1,27 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenit Mine</title>
+    <title>Zenit Empire</title>
     <style>
-        body { background: #1a012e; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .header { padding: 30px; font-size: 40px; color: #ff00ff; text-shadow: 0 0 15px #bc13fe; }
-        #cristal { width: 200px; margin-top: 50px; cursor: pointer; transition: 0.1s; filter: drop-shadow(0 0 20px #bc13fe); }
-        #cristal:active { transform: scale(0.9); }
+        body {
+            background: radial-gradient(circle, #1a0a2e 0%, #050505 100%);
+            color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #stats {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 1px solid #ff00ff;
+            box-shadow: 0 0 15px #ff00ff;
+        }
+        #money { font-size: 2.5rem; font-weight: bold; color: #00ffff; text-shadow: 0 0 10px #00ffff; }
+        
+        #crystal-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #crystal {
+            width: 200px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 0 20px #ff00ff);
+        }
+        #crystal:active { transform: scale(0.9); }
+
+        #shop {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-top: 2px solid #ff00ff;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .upgrade {
+            background: #2e0a4e;
+            border: 1px solid #00ffff;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .upgrade:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <div class="header">💎 <span id="puntos">0.00</span></div>
-    
-    <img src="cristal.png_1.jpg" id="cristal" onclick="minar()">
+
+    <div id="stats">
+        <div>Diamantes Zenit</div>
+        <div id="money">0</div>
+        <div id="gps">Por segundo: 0</div>
+    </div>
+
+    <div id="crystal-container">
+        <img id="crystal" src="cristal.png_1.jpg" alt="Cristal Sagrado">
+    </div>
+
+    <div id="shop">
+        <button class="upgrade" onclick="buyUpgrade(10, 1)">⛏️ Pico Mini (10)</button>
+        <button class="upgrade" onclick="buyAuto(50, 2)">🤖 Minero Auto (50)</button>
+    </div>
 
     <script>
-        let balance = 0;
-        function minar() {
-            balance += 0.05;
-            document.getElementById('puntos').innerText = balance.toFixed(2);
+        let money = 0;
+        let perClick = 1;
+        let perSecond = 0;
+
+        const moneyEl = document.getElementById('money');
+        const crystal = document.getElementById('crystal');
+        const gpsEl = document.getElementById('gps');
+
+        crystal.addEventListener('click', () => {
+            money += perClick;
+            updateDisplay();
+        });
+
+        function buyUpgrade(cost, power) {
+            if (money >= cost) {
+                money -= cost;
+                perClick += power;
+                updateDisplay();
+            }
         }
+
+        function buyAuto(cost, power) {
+            if (money >= cost) {
+                money -= cost;
+                perSecond += power;
+                updateDisplay();
+            }
+        }
+
+        function updateDisplay() {
+            moneyEl.innerText = Math.floor(money);
+            gpsEl.innerText = "Por segundo: " + perSecond;
+        }
+
+        setInterval(() => {
+            money += perSecond / 10;
+            updateDisplay();
+        }, 100);
     </script>
 </body>
 </html>
