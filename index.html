@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenit Mine</title>
+    <style>
+        body { background: #1a012e; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .header { padding: 30px; font-size: 40px; color: #ff00ff; text-shadow: 0 0 15px #bc13fe; }
+        #cristal { width: 200px; margin-top: 50px; cursor: pointer; transition: 0.1s; filter: drop-shadow(0 0 20px #bc13fe); }
+        #cristal:active { transform: scale(0.9); }
+    </style>
+</head>
+<body>
+    <div class="header">💎 <span id="puntos">0.00</span></div>
+    
+    <img src="cristal.png" id="cristal" onclick="minar()">
+
+    <script>
+        let balance = 0;
+        function minar() {
+            balance += 0.05;
+            document.getElementById('puntos').innerText = balance.toFixed(2);
+        }
+    </script>
+</body>
+</html>
