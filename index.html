@@ -8,33 +8,56 @@
         :root { --n-blue: #00f2ff; --n-pink: #ff00d4; --bg: #05050a; --card: #10101a; }
         body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        #top-bar { display: flex; justify-content: space-around; padding: 15px; background: #1a1a2e; border-bottom: 2px solid var(--n-pink); }
+        /* HEADER FIJO */
+        #top-bar { display: flex; justify-content: space-around; padding: 15px; background: #1a1a2e; border-bottom: 2px solid var(--n-pink); z-index: 100; }
         .balance-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--n-blue); text-align: center; }
         .balance-label { font-size: 0.6rem; text-transform: uppercase; color: #888; }
 
+        /* CUERPO */
         #main-container { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
         .page { display: none; }
         .page.active { display: block; }
 
+        /* CARDS */
         .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; }
         .info { flex-grow: 1; }
         .name { color: var(--n-pink); font-weight: bold; display: block; font-size: 0.9rem; }
         .stats { font-size: 0.75rem; color: #aaa; }
         .btn { background: var(--n-blue); border: none; color: black; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* RULETA MEJORADA */
-        #ruleta-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
-        .wheel-box { position: relative; width: 300px; height: 300px; }
-        .wheel-img { width: 100%; height: 100%; border-radius: 50%; border: 5px solid var(--n-pink); transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1); background: conic-gradient(#ff00d4 0deg 45deg, #1a1a2e 45deg 90deg, #00f2ff 90deg 135deg, #1a1a2e 135deg 180deg, #ff00d4 180deg 225deg, #1a1a2e 225deg 270deg, #00f2ff 270deg 315deg, #1a1a2e 315deg 360deg); }
-        .wheel-marker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 30px; z-index: 10; color: white; }
+        /* MINA Y DRONES */
+        .mina-header { text-align: center; padding: 20px 0; }
+        .cristal-img { width: 140px; filter: drop-shadow(0 0 20px var(--n-blue)); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        
+        .drones-container { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; 
+            margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; min-height: 80px;
+        }
+        .drone-unit { text-align: center; width: 60px; animation: hover 3s ease-in-out infinite; }
+        .drone-unit img { width: 40px; height: 40px; display: block; margin: 0 auto; }
+        .drone-unit span { font-size: 0.6rem; color: var(--n-blue); font-weight: bold; }
+        @keyframes hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        /* MINA DRONES ACTIVOS */
-        .working-drones { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; }
-        .mini-drone { width: 50px; text-align: center; font-size: 0.6rem; color: var(--n-blue); animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        /* RULETA MODAL */
+        #ruleta-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
+        .wheel-wrapper { position: relative; width: 280px; height: 280px; margin: 20px 0; }
+        .wheel-canvas { 
+            width: 100%; height: 100%; border-radius: 50%; border: 8px solid #222;
+            background: conic-gradient(
+                #ff00d4 0deg 45deg, #111 45deg 90deg, 
+                #00f2ff 90deg 135deg, #111 135deg 180deg, 
+                #ff00d4 180deg 225deg, #111 225deg 270deg, 
+                #00f2ff 270deg 315deg, #111 315deg 360deg
+            );
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            box-shadow: 0 0 40px rgba(255, 0, 212, 0.3);
+        }
+        .wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 40px; color: white; z-index: 10; text-shadow: 0 0 10px black; }
 
-        #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
-        .nav-item { text-align: center; color: #666; font-size: 0.7rem; cursor: pointer; flex: 1; }
+        /* NAV */
+        #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 100; }
+        .nav-item { text-align: center; color: #555; font-size: 0.7rem; cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--n-blue); }
         .nav-icon { font-size: 1.5rem; display: block; }
     </style>
@@ -42,95 +65,95 @@
 <body>
 
 <div id="top-bar">
-    <div><span class="balance-val" id="p-compra">1,000</span><span class="balance-label">Plata</span></div>
-    <div><span class="balance-val" id="o-retiro">0.00</span><span class="balance-label">Oro</span></div>
+    <div><span class="balance-val" id="disp-plata">1,000</span><span class="balance-label">Plata (Compra)</span></div>
+    <div><span class="balance-val" id="disp-oro">0.00</span><span class="balance-label">Oro (Retiro)</span></div>
 </div>
 
 <div id="main-container">
     <div id="tab-mina" class="page active">
-        <h2 style="border-left: 4px solid var(--n-blue); padding-left:10px">MINA DE CRISTALES</h2>
-        <div style="text-align:center;">
-            <img src="cristal.png" style="width:150px; filter: drop-shadow(0 0 15px var(--n-blue));">
-            <div class="card" style="margin-top:15px; justify-content:center; flex-direction:column">
-                <span class="stats">CRISTALES GENERADOS</span>
-                <span id="c-count" style="font-size:1.8rem; font-weight:bold">0.00</span>
+        <div class="mina-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/6164/6164344.png" class="cristal-img" alt="Cristal">
+            <div class="card" style="margin-top:20px; justify-content:center; flex-direction:column">
+                <span class="stats">CRISTALES DISPONIBLES</span>
+                <span id="cristales-num" style="font-size:1.8rem; font-weight:bold">0.00</span>
             </div>
-            
-            <p class="name" style="font-size:0.7rem; margin-top:20px">DRONES TRABAJANDO</p>
-            <div id="drones-area" class="working-drones">
-                <div class="mini-drone">🛰️<br>Regalo</div>
+            <h3 style="font-size:0.8rem; color:var(--n-pink); margin-top:25px; letter-spacing:2px">FLOTA ACTIVA</h3>
+            <div id="mina-drones" class="drones-container">
+                <div class="drone-unit"><img src="https://cdn-icons-png.flaticon.com/512/3211/3211468.png"><span>NIVEL 1</span></div>
             </div>
         </div>
     </div>
 
     <div id="tab-tienda" class="page">
-        <h2>TIENDA</h2>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 2 ($3)</span><span class="stats">Prod: 221/h</span></div><button class="btn" onclick="buy(30000, 'Nivel 2')">30,000 P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 4 ($12)</span><span class="stats">Prod: 6,091/h</span></div><button class="btn" onclick="buy(150000, 'Nivel 4')">150,000 P</button></div>
+        <h2>TIENDA DE DRONES</h2>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 2 ($3)</span><span class="stats">Prod: 221/h</span></div><button class="btn" onclick="comprarDron(30000, 'NIVEL 2')">30,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 3 ($5)</span><span class="stats">Prod: 1,160/h</span></div><button class="btn" onclick="comprarDron(55000, 'NIVEL 3')">55,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 4 ($12)</span><span class="stats">Prod: 6,091/h</span></div><button class="btn" onclick="comprarDron(150000, 'NIVEL 4')">150,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 5 ($25)</span><span class="stats">Prod: 31,979/h</span></div><button class="btn" onclick="comprarDron(625000, 'NIVEL 5')">625,000 P</button></div>
     </div>
 
     <div id="tab-menu" class="page">
-        <h2>SISTEMA Y JUEGOS</h2>
-        <div class="card" style="border: 2px solid var(--n-pink);">
-            <div class="info"><span class="name">🎡 RULETA FORTUNA</span><span class="stats">1 boleto = 1 giro</span></div>
-            <button class="btn" onclick="openWheel()" style="background:var(--n-pink); color:white">JUGAR</button>
-        </div>
+        <h2>SISTEMA</h2>
+        <div class="card" style="border: 2px solid var(--n-pink);"><div class="info"><span class="name">🎡 RULETA FORTUNA</span><span class="stats">1 ticket por cada $10 USD</span></div><button class="btn" onclick="abrirRuleta()" style="background:var(--n-pink); color:white">JUGAR</button></div>
+        <div class="card"><div class="info"><span class="name">🔄 INTERCAMBIADOR</span><span class="stats">Oro a Plata (+20% Bonus)</span></div><button class="btn">ABRIR</button></div>
     </div>
 </div>
 
 <div id="ruleta-modal">
-    <h2 style="color:var(--n-blue)">RULETA ZENIT</h2>
-    <div class="wheel-box">
-        <div class="wheel-marker">▼</div>
-        <div id="wheel" class="wheel-img"></div>
+    <h2 style="color:var(--n-blue); margin-bottom:0">RUEDA DE LA FORTUNA</h2>
+    <p class="stats">Tickets: <span id="tickets-val" style="color:white">1</span></p>
+    <div class="wheel-wrapper">
+        <div class="wheel-pointer">▼</div>
+        <div id="rueda" class="wheel-canvas"></div>
     </div>
-    <p id="wheel-msg" class="stats" style="margin-top:20px; font-size:1rem; color:var(--n-pink)">Tickets: 1</p>
-    <button class="btn" id="spin-btn" onclick="spin()" style="width:220px; padding:15px; margin-bottom:10px">GIRAR AHORA</button>
-    <button class="btn" onclick="closeWheel()" style="background:none; color:white">CERRAR</button>
+    <button class="btn" id="btn-spin" onclick="girarRuleta()" style="width:220px; padding:18px; font-size:1.1rem">¡GIRAR!</button>
+    <button class="btn" onclick="cerrarRuleta()" style="background:none; color:#888; margin-top:20px">VOLVER</button>
 </div>
 
 <nav id="nav-bar">
-    <div class="nav-item active" onclick="nav('tab-mina', this)"><span class="nav-icon">⛏️</span>Mina</div>
-    <div class="nav-item" onclick="nav('tab-tienda', this)"><span class="nav-icon">🛒</span>Tienda</div>
-    <div class="nav-item" onclick="nav('tab-menu', this)"><span class="nav-icon">🔳</span>Menú</div>
+    <div class="nav-item active" onclick="cambiar(0, this)"><span class="nav-icon">⛏️</span>Mina</div>
+    <div class="nav-item" onclick="cambiar(1, this)"><span class="nav-icon">🛒</span>Tienda</div>
+    <div class="nav-item" onclick="cambiar(2, this)"><span class="nav-icon">🔳</span>Menú</div>
 </nav>
 
 <script>
-    let tickets = 1;
-    let balancePlata = 1000;
+    let plata = 1000;
+    let tks = 1;
 
-    function nav(id, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+    function cambiar(idx, el) {
+        const p = document.querySelectorAll('.page');
+        const n = document.querySelectorAll('.nav-item');
+        p.forEach(page => page.classList.remove('active'));
+        n.forEach(item => item.classList.remove('active'));
+        p[idx].classList.add('active');
         el.classList.add('active');
     }
 
-    function buy(price, name) {
-        if(balancePlata >= price) {
-            balancePlata -= price;
-            document.getElementById('p-compra').innerText = balancePlata;
-            const area = document.getElementById('drones-area');
-            area.innerHTML += `<div class="mini-drone">🛰️<br>${name}</div>`;
-            alert("¡Dron comprado y puesto a trabajar!");
-        } else { alert("Plata insuficiente"); }
+    function comprarDron(precio, nivel) {
+        if(plata >= precio) {
+            plata -= precio;
+            document.getElementById('disp-plata').innerText = plata.toLocaleString();
+            const mina = document.getElementById('mina-drones');
+            mina.innerHTML += `<div class="drone-unit"><img src="https://cdn-icons-png.flaticon.com/512/3211/3211468.png"><span>${nivel}</span></div>`;
+            alert("¡Dron comprado! Ahora está en la mina.");
+        } else { alert("No tienes suficiente Plata."); }
     }
 
-    function openWheel() { document.getElementById('ruleta-modal').style.display = 'flex'; }
-    function closeWheel() { document.getElementById('ruleta-modal').style.display = 'none'; }
+    function abrirRuleta() { document.getElementById('ruleta-modal').style.display = 'flex'; }
+    function cerrarRuleta() { document.getElementById('ruleta-modal').style.display = 'none'; }
 
-    function spin() {
-        if(tickets <= 0) return alert("Sin tickets");
-        tickets--;
-        document.getElementById('wheel-msg').innerText = "Tickets: " + tickets;
-        const wheel = document.getElementById('wheel');
-        const degrees = Math.floor(Math.random() * 360) + 1800; 
-        wheel.style.transform = `rotate(${degrees}deg)`;
+    function girarRuleta() {
+        if(tks <= 0) return alert("No tienes tickets.");
+        tks--;
+        document.getElementById('tickets-val').innerText = tks;
+        const rueda = document.getElementById('rueda');
+        const giro = Math.floor(Math.random() * 360) + 1440; // Mínimo 4 vueltas
+        rueda.style.transform = `rotate(${giro}deg)`;
         
         setTimeout(() => {
-            const premios = ["500 Plata", "10 Oro", "200 Plata", "Ticket Extra", "50 Oro", "100 Plata", "Sigue intentando", "Bono x2"];
-            const randomP = premios[Math.floor(Math.random() * premios.length)];
-            alert("¡FELICIDADES! Ganaste: " + randomP);
+            const premios = ["500 Plata", "1,000 Plata", "50 Oro", "10 Oro", "Ticket Extra", "Dron Nivel 1", "200 Plata", "Suerte la próxima"];
+            const ganador = premios[Math.floor(Math.random() * premios.length)];
+            alert("✨ RESULTADO: " + ganador);
         }, 4000);
     }
 </script>
