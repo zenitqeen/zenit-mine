@@ -18,26 +18,31 @@
         .page { display: none; width: 100%; }
         .page.active { display: block; }
 
-        /* MINA PRO (SEGÚN TU IMAGEN) */
+        /* MINA PRO (DRONES BLOQUEADOS AQUÍ) */
         .mina-title { border-left: 4px solid var(--n-blue); padding-left: 10px; font-size: 1.4rem; font-weight: bold; text-align: left; margin-bottom: 20px; text-transform: uppercase; }
         .cristal-img { width: 120px; filter: drop-shadow(0 0 15px var(--n-blue)); margin: 10px auto; display: block; }
         .counter-card { background: #10101a; border-radius: 15px; padding: 20px; margin: 20px 0; border: 1px solid #222; text-align: center; }
         
-        /* CUADRÍCULA DE DRONES CON CANDADOS */
         .drones-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
         .drone-slot { aspect-ratio: 1/1; background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.3s; }
-        .drone-slot.locked { filter: grayscale(1); opacity: 0.4; }
+        
+        /* Efecto Bloqueado en Mina */
+        .drone-slot.locked { filter: grayscale(1); opacity: 0.3; }
         .drone-slot.locked::after { content: '🔒'; position: absolute; bottom: 5px; right: 5px; font-size: 12px; }
         .drone-slot.active { border-color: var(--n-blue); background: rgba(0, 242, 255, 0.05); filter: none; opacity: 1; }
         .drone-ico { width: 40px; margin-bottom: 5px; }
 
-        /* TIENDA PRO (NUEVO DISEÑO CON ICONOS) */
+        /* TIENDA ESTILO BIRD EMPIRE (DRONES A COLOR) */
         .shop-card { background: #12121f; border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #1a1a2e; gap: 12px; }
-        .shop-img { width: 45px; height: 45px; filter: drop-shadow(0 0 5px var(--n-pink)); }
+        .shop-img { width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(0 0 8px var(--n-pink)); }
         .shop-info { flex-grow: 1; }
         .name { color: var(--n-pink); font-weight: bold; display: block; font-size: 0.9rem; }
         .stats { font-size: 0.75rem; color: #aaa; }
-        .buy-btn { background: var(--n-blue); color: #000; border: none; border-radius: 10px; padding: 10px 12px; font-weight: bold; font-size: 0.85rem; min-width: 90px; cursor: pointer; box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        .buy-btn { background: var(--n-blue); color: #000; border: none; border-radius: 10px; padding: 10px 12px; font-weight: bold; font-size: 0.85rem; min-width: 90px; cursor: pointer; }
+
+        /* ALMACÉN */
+        .card { background: #10101a; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; }
+        .btn { border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
 
         /* NAVEGACIÓN */
         #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
@@ -108,14 +113,17 @@
     </div>
 
     <div id="p-almacen" class="page">
-        <h2>ALMACÉN</h2>
+        <h2 style="border-left:4px solid var(--n-blue); padding-left:10px">ALMACÉN</h2>
         <div class="card" style="flex-direction:column; text-align:center">
             <span class="stats">CRISTALES EN STOCK</span>
             <span id="c-total" style="font-size:2rem; font-weight:bold">0.00</span>
         </div>
-        <button class="btn" style="width:100%; margin-bottom:10px; background:var(--n-blue)" onclick="recolectar()">RECOLECTAR</button>
+        <button class="btn" style="width:100%; margin-bottom:10px; background:var(--n-blue); color:black" onclick="recolectar()">RECOLECTAR</button>
         <button class="btn" style="width:100%; background:var(--n-pink); color:white" onclick="vender()">VENDER (70/30)</button>
     </div>
+
+    <div id="p-pagos" class="page"><h2>BILLETERA</h2></div>
+    <div id="p-menu" class="page"><h2>SISTEMA</h2></div>
 </div>
 
 <nav id="nav-bar">
@@ -129,7 +137,13 @@
 <script>
     let p = 1000; let o = 0; let ct = 0; let cst = 0; let prod = 0;
 
-    setInterval(() => { if(prod > 0) { ct += prod; document.getElementById('c-temp').innerText = ct.toFixed(2); } }, 1000);
+    // Reloj de producción
+    setInterval(() => { 
+        if(prod > 0) { 
+            ct += prod; 
+            document.getElementById('c-temp').innerText = ct.toFixed(2); 
+        } 
+    }, 1000);
 
     function navegar(id, el) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -140,22 +154,42 @@
 
     function comprar(costo, nivel, suma) {
         if(p >= costo) {
-            p -= costo; prod += suma; 
-            document.getElementById('b-plata').innerText = p.toFixed(2);
+            p -= costo; 
+            prod += suma; 
+            updateBalances();
+            // Desbloquear visualmente en la MINA
             let slot = document.getElementById('slot-' + nivel);
-            if(slot) { slot.classList.remove('locked'); slot.classList.add('active'); }
-            alert("¡Dron " + nivel + " activado!");
-        } else { alert("Falta Plata"); }
+            if(slot) { 
+                slot.classList.remove('locked'); 
+                slot.classList.add('active'); 
+            }
+            alert("¡Dron " + nivel + " activado con éxito!");
+        } else { 
+            alert("No tienes suficiente plata."); 
+        }
     }
 
-    function recolectar() { cst += ct; ct = 0; document.getElementById('c-total').innerText = cst.toFixed(2); document.getElementById('c-temp').innerText = "0.00"; }
+    function recolectar() { 
+        cst += ct; 
+        ct = 0; 
+        document.getElementById('c-total').innerText = cst.toFixed(2); 
+        document.getElementById('c-temp').innerText = "0.00"; 
+    }
+
     function vender() {
-        if(cst < 100) return alert("Mínimo 100");
-        p += (cst/100)*0.7; o += (cst/100)*0.3; cst = 0;
-        document.getElementById('b-plata').innerText = p.toFixed(2);
-        document.getElementById('b-oro').innerText = o.toFixed(2);
+        if(cst < 100) return alert("Mínimo para vender: 100 cristales");
+        p += (cst/100)*0.7; 
+        o += (cst/100)*0.3; 
+        cst = 0;
+        updateBalances();
         document.getElementById('c-total').innerText = "0.00";
+    }
+
+    function updateBalances() {
+        document.getElementById('b-plata').innerText = p.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('b-oro').innerText = o.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 </script>
 </body>
-</html>
+    </html>
+            
