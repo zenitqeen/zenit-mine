@@ -25,51 +25,88 @@
         .stats { font-size: 0.75rem; color: #aaa; }
         .btn { background: var(--n-blue); border: none; color: black; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* MINA */
-        .mina-box { text-align: center; }
-        .cristal-img { width: 140px; filter: drop-shadow(0 0 15px var(--n-blue)); margin-bottom: 15px; }
-        #lista-drones { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; min-height: 50px; }
-        .drone-unit { width: 45px; height: 45px; background: #1a1a2e; border: 1px solid var(--n-blue); display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
+        /* MINA PRO */
+        .mina-title { border-left: 4px solid var(--n-blue); padding-left: 10px; font-size: 1.4rem; font-weight: bold; text-align: left; margin-bottom: 20px; text-transform: uppercase; }
+        .cristal-img { width: 120px; filter: drop-shadow(0 0 15px var(--n-blue)); margin: 10px auto; display: block; }
+        .counter-card { background: #10101a; border-radius: 15px; padding: 20px; margin: 20px 0; border: 1px solid #222; text-align: center; }
+        
+        /* CUADRÍCULA CON TODOS BLOQUEADOS AL INICIO */
+        .drones-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .drone-slot { aspect-ratio: 1/1; background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.3s; }
+        .drone-slot.locked { filter: grayscale(1); opacity: 0.4; }
+        .drone-slot.locked::after { content: '🔒'; position: absolute; bottom: 5px; right: 5px; font-size: 12px; }
+        .drone-slot.active { border-color: var(--n-blue); background: rgba(0, 242, 255, 0.05); filter: none; opacity: 1; }
+        .drone-slot.active::before { content: '✓'; position: absolute; top: 5px; right: 8px; color: var(--n-blue); font-size: 10px; font-weight: bold; }
+        .drone-ico { width: 40px; margin-bottom: 5px; }
+        .slot-label { font-size: 0.6rem; font-weight: bold; color: #555; }
+        .active .slot-label { color: var(--n-blue); }
 
-        /* RULETA */
-        #ruleta-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; flex-direction: column; align-items: center; justify-content: center; }
-        .wheel { width: 260px; height: 260px; border-radius: 50%; border: 6px solid var(--n-pink); transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            background: conic-gradient(#ff00d4 0deg 45deg, #111 45deg 90deg, #00f2ff 90deg 135deg, #111 135deg 180deg, #ff00d4 180deg 225deg, #111 225deg 270deg, #00f2ff 270deg 315deg, #111 315deg 360deg);
-        }
+        /* TIENDA PRO */
+        .shop-card { background: #12121f; border-radius: 15px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #1a1a2e; }
+        .buy-btn { background: var(--n-blue); color: #000; border: none; border-radius: 10px; padding: 10px 15px; font-weight: bold; font-size: 0.9rem; min-width: 90px; cursor: pointer; }
 
         /* NAVEGACIÓN */
         #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
         .nav-item { text-align: center; color: #555; font-size: 0.7rem; flex: 1; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; }
         .nav-item.active { color: var(--n-blue); }
         .nav-icon { font-size: 1.5rem; display: block; }
+
+        /* RULETA */
+        #ruleta-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; flex-direction: column; align-items: center; justify-content: center; }
+        .wheel { width: 260px; height: 260px; border-radius: 50%; border: 6px solid var(--n-pink); transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            background: conic-gradient(#ff00d4 0deg 45deg, #111 45deg 90deg, #00f2ff 90deg 135deg, #111 135deg 180deg, #ff00d4 180deg 225deg, #111 225deg 270deg, #00f2ff 270deg 315deg, #111 315deg 360deg);
+        }
     </style>
 </head>
 <body>
 
 <div id="top-bar">
-    <div><span class="balance-val" id="b-plata">1,000</span><span class="balance-label">Plata</span></div>
+    <div><span class="balance-val" id="b-plata">1,000.00</span><span class="balance-label">Plata</span></div>
     <div><span class="balance-val" id="b-oro">0.00</span><span class="balance-label">Oro</span></div>
 </div>
 
 <div id="main-container">
+    
     <div id="p-mina" class="page active">
-        <div class="mina-box">
-            <img src="cristal.png" class="cristal-img">
-            <div class="card" style="flex-direction:column">
-                <span class="stats">CRISTALES POR RECOLECTAR</span>
-                <span id="c-temp" style="font-size:1.8rem; font-weight:bold; color:var(--n-blue)">0.00</span>
-            </div>
-            <div id="lista-drones"></div>
+        <div class="mina-title">Mina de Cristales</div>
+        <img src="cristal.png" class="cristal-img">
+        <div class="counter-card">
+            <span class="stats">CRISTALES GENERADOS</span>
+            <span id="c-temp" style="font-size:2.2rem; font-weight:bold; color:white; display:block">0.00</span>
+        </div>
+        
+        <p style="text-align:center; color:var(--n-pink); font-size:0.7rem; font-weight:bold; letter-spacing:1px">DRONES TRABAJANDO</p>
+        <div class="drones-grid">
+            <div class="drone-slot locked" id="slot-N1"><img src="dron.png" class="drone-ico"><span class="slot-label">N1</span></div>
+            <div class="drone-slot locked" id="slot-N2"><img src="dron.png" class="drone-ico"><span class="slot-label">N2</span></div>
+            <div class="drone-slot locked" id="slot-N3"><img src="dron.png" class="drone-ico"><span class="slot-label">N3</span></div>
+            <div class="drone-slot locked" id="slot-N4"><img src="dron.png" class="drone-ico"><span class="slot-label">N4</span></div>
+            <div class="drone-slot locked" id="slot-N5"><img src="dron.png" class="drone-ico"><span class="slot-label">N5</span></div>
         </div>
     </div>
 
     <div id="p-tienda" class="page">
-        <h2>TIENDA</h2>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 1</span><span class="stats">Prod: 42/h</span></div><button class="btn" onclick="comprar(1000, 'N1', 0.01)">1,000 P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 2</span><span class="stats">Prod: 221/h</span></div><button class="btn" onclick="comprar(30000, 'N2', 0.06)">30k P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 3</span><span class="stats">Prod: 1,160/h</span></div><button class="btn" onclick="comprar(55000, 'N3', 0.32)">55k P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 4</span><span class="stats">Prod: 6,091/h</span></div><button class="btn" onclick="comprar(150000, 'N4', 1.69)">150k P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 5</span><span class="stats">Prod: 31,979/h</span></div><button class="btn" onclick="comprar(625000, 'N5', 8.88)">625k P</button></div>
+        <h2 style="border-left:4px solid var(--n-pink); padding-left:10px">TIENDA DE DRONES</h2>
+        <div class="shop-card">
+            <div class="info"><span class="name">Dron Nivel 1</span><span class="stats">Prod: 42/h</span></div>
+            <button class="buy-btn" onclick="comprar(1000, 'N1', 0.012)">1,000 P</button>
+        </div>
+        <div class="shop-card">
+            <div class="info"><span class="name">Dron Nivel 2</span><span class="stats">Prod: 221/h</span></div>
+            <button class="buy-btn" onclick="comprar(30000, 'N2', 0.062)">30,000 P</button>
+        </div>
+        <div class="shop-card">
+            <div class="info"><span class="name">Dron Nivel 3</span><span class="stats">Prod: 1,160/h</span></div>
+            <button class="buy-btn" onclick="comprar(55000, 'N3', 0.32)">55,000 P</button>
+        </div>
+        <div class="shop-card">
+            <div class="info"><span class="name">Dron Nivel 4</span><span class="stats">Prod: 6,091/h</span></div>
+            <button class="buy-btn" onclick="comprar(150000, 'N4', 1.69)">150,000 P</button>
+        </div>
+        <div class="shop-card">
+            <div class="info"><span class="name">Dron Nivel 5</span><span class="stats">Prod: 31,979/h</span></div>
+            <button class="buy-btn" onclick="comprar(625000, 'N5', 8.88)">625,000 P</button>
+        </div>
     </div>
 
     <div id="p-almacen" class="page">
@@ -118,12 +155,15 @@
 </nav>
 
 <script>
-    let p = 1000; let o = 0; let ct = 0; let cst = 0; let prod = 0.01;
+    let p = 1000; let o = 0; let ct = 0; let cst = 0; let prod = 0; // Producción empieza en 0 hasta comprar el primero
 
-    // EL RELOJ DE MINADO (Sube solo cada segundo)
-    setInterval(() => { ct += prod; document.getElementById('c-temp').innerText = ct.toFixed(2); }, 1000);
+    setInterval(() => { 
+        if(prod > 0) {
+            ct += prod; 
+            document.getElementById('c-temp').innerText = ct.toFixed(2); 
+        }
+    }, 1000);
 
-    // FUNCIÓN PARA CAMBIAR DE PÁGINA (Ahora sí funciona jefa!)
     function navegar(id, el) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -134,24 +174,22 @@
     function comprar(costo, nivel, suma) {
         if(p >= costo) {
             p -= costo; prod += suma; update();
-            document.getElementById('lista-drones').innerHTML += `<div class="drone-unit">🛸</div>`;
-            alert("¡Dron " + nivel + " activado!");
-        } else { alert("Falta Plata"); }
+            let slot = document.getElementById('slot-' + nivel);
+            if(slot) { slot.classList.remove('locked'); slot.classList.add('active'); }
+            alert("¡Dron " + nivel + " desbloqueado! Ya está minando.");
+        } else { alert("Plata insuficiente"); }
     }
 
-    function recolectar() { cst += ct; ct = 0; document.getElementById('c-total').innerText = cst.toFixed(2); }
-
+    function recolectar() { cst += ct; ct = 0; document.getElementById('c-total').innerText = cst.toFixed(2); document.getElementById('c-temp').innerText = "0.00"; }
     function vender() {
         if(cst < 100) return alert("Mínimo 100");
         p += (cst/100)*0.7; o += (cst/100)*0.3; cst = 0; update();
         document.getElementById('c-total').innerText = "0.00";
     }
-
     function update() {
         document.getElementById('b-plata').innerText = p.toFixed(2);
         document.getElementById('b-oro').innerText = o.toFixed(2);
     }
-
     function girar() {
         const w = document.getElementById('wheel');
         const deg = Math.floor(Math.random() * 360) + 1800;
@@ -160,5 +198,5 @@
     }
 </script>
 </body>
-    </html>
-                
+            </html>
+            
