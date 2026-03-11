@@ -6,83 +6,120 @@
     <title>Zenit Empire</title>
     <style>
         :root { --n-blue: #00f2ff; --n-pink: #ff00d4; --bg: #05050a; --card: #10101a; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* HEADER */
         #top-bar { display: flex; justify-content: space-around; padding: 15px; background: #1a1a2e; border-bottom: 1px solid var(--n-blue); }
-        .balance-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--n-blue); }
+        .balance-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--n-blue); text-align: center; }
         .balance-label { font-size: 0.6rem; text-transform: uppercase; color: #888; }
-        #content { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+
+        /* CONTAINER */
+        #main-container { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
         .page { display: none; }
-        .active { display: block; }
-        .drone-card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; }
-        .info { flex-grow: 1; margin-left: 10px; }
+        .page.active { display: block; }
+
+        /* CARDS */
+        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; }
+        .info { flex-grow: 1; }
         .name { color: var(--n-pink); font-weight: bold; display: block; font-size: 0.9rem; }
         .stats { font-size: 0.75rem; color: #aaa; }
-        .btn { background: var(--n-blue); border: none; color: black; padding: 8px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; min-width: 80px; }
-        .crystal { width: 160px; display: block; margin: 20px auto; filter: drop-shadow(0 0 15px var(--n-blue)); }
-        #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; }
-        .nav-item { text-align: center; color: #555; font-size: 0.7rem; cursor: pointer; }
+        .btn { background: var(--n-blue); border: none; color: black; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        /* NAV */
+        #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 100; }
+        .nav-item { text-align: center; color: #555; font-size: 0.7rem; cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--n-blue); }
-        .nav-icon { font-size: 1.4rem; display: block; }
+        .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
+
+        h2 { border-left: 4px solid var(--n-pink); padding-left: 10px; margin-bottom: 20px; font-size: 1.2rem; }
+        input { background: #1a1a2e; border: 1px solid var(--n-blue); color: white; padding: 10px; border-radius: 5px; width: 90%; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div id="top-bar">
-    <div class="balance-box"><span class="balance-val">1000</span><span class="balance-label">Plata (Compras)</span></div>
-    <div class="balance-box"><span class="balance-val">0.00</span><span class="balance-label">Oro (Retiro)</span></div>
+    <div><span class="balance-val" id="p-compra">1000</span><span class="balance-label">Plata (Compras)</span></div>
+    <div><span class="balance-val" id="o-retiro">0.00</span><span class="balance-label">Oro (Retiro)</span></div>
 </div>
 
-<div id="content">
+<div id="main-container">
     <div id="tab-mina" class="page active">
-        <h2 style="text-align:center">NÚCLEO ZENIT</h2>
-        <img src="https://cdn-icons-png.flaticon.com/512/6164/6164344.png" class="crystal">
-        <div class="drone-card" style="justify-content:center; text-align:center">
-            <div class="info"><span class="name">Cristales Minados</span><span style="font-size:1.5rem">0.00</span></div>
+        <h2 style="border-color:var(--n-blue)">NÚCLEO ZENIT</h2>
+        <div style="text-align:center; padding: 20px 0;">
+            <div style="font-size: 60px; filter: drop-shadow(0 0 15px var(--n-blue));">💎</div>
+            <div class="card" style="margin-top:20px; justify-content:center; flex-direction: column;">
+                <span class="stats">CRISTALES MINADOS</span>
+                <span id="cristales-count" style="font-size:1.8rem; color:white;">0.00</span>
+            </div>
         </div>
     </div>
 
     <div id="tab-tienda" class="page">
-        <h2 style="color:var(--n-blue)">TIENDA DE DRONES</h2>
-        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 1 (Iniciado)</span><span class="stats">Prod: 42/h</span></div><button class="btn">1,000 P</button></div>
-        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 2 (Scout - $3)</span><span class="stats">Prod: 221/h</span></div><button class="btn">30,000 P</button></div>
-        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 3 (Carga - $5)</span><span class="stats">Prod: 1,160/h</span></div><button class="btn">55,000 P</button></div>
-        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 4 (Elite - $12)</span><span class="stats">Prod: 6,091/h</span></div><button class="btn">150,000 P</button></div>
-        <div class="drone-card"><div class="info"><span class="name">Dron Nivel 5 (Supremo - $25)</span><span class="stats">Prod: 31,979/h</span></div><button class="btn">625,000 P</button></div>
+        <h2>CENTRO DE TECNOLOGÍA</h2>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 1 (Regalo)</span><span class="stats">Prod: 42/h</span></div><button class="btn">1,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 2 ($3)</span><span class="stats">Prod: 221/h</span></div><button class="btn">30,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 3 ($5)</span><span class="stats">Prod: 1,160/h</span></div><button class="btn">55,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 4 ($12)</span><span class="stats">Prod: 6,091/h</span></div><button class="btn">150,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 5 ($25)</span><span class="stats">Prod: 31,979/h</span></div><button class="btn">625,000 P</button></div>
     </div>
 
     <div id="tab-almacen" class="page">
-        <h2>ALMACÉN</h2>
-        <button class="btn" style="width:100%; padding:15px; margin-bottom:10px">RECOLECTAR CRISTALES</button>
-        <button class="btn" style="width:100%; padding:15px; background:var(--n-pink); color:white">VENDER (70% PLATA / 30% ORO)</button>
+        <h2>ALMACÉN Y VENTA</h2>
+        <div class="card"><div class="info"><span class="name">Tus Cristales</span><span id="storage-val" style="font-size:1.5rem">0.00</span></div></div>
+        <button class="btn" style="width:100%; padding:15px; margin-bottom:10px">RECOLECTAR TODO</button>
+        <button class="btn" style="width:100%; padding:15px; background:var(--n-pink); color:white">VENDER (70% Plata / 30% Oro)</button>
     </div>
 
-    <div id="tab-tareas" class="page">
-        <h2>TAREAS</h2>
-        <div class="drone-card"><div class="info"><span class="name">Referidos</span><span class="stats">Gana 500 Plata por amigo</span></div><button class="btn">INVITAR</button></div>
+    <div id="tab-wallet" class="page">
+        <h2>BILLETERA IMPERIAL</h2>
+        <div style="display:flex; gap:10px; margin-bottom:20px">
+            <button class="btn" onclick="toggleWallet('recarga')" style="flex:1">RECARGAR</button>
+            <button class="btn" onclick="toggleWallet('retiro')" style="flex:1; background:var(--n-pink); color:white">RETIRAR</button>
+        </div>
+
+        <div id="area-recarga">
+            <span class="stats">Monto en USD:</span><br>
+            <input type="number" placeholder="Ej: 10">
+            <div class="card"><div class="info"><span class="name">Pagar con USDT (BEP20)</span><span class="stats">Dirección: 0x123...abc</span></div><button class="btn">COPIAR</button></div>
+        </div>
+
+        <div id="area-retiro" style="display:none">
+            <span class="stats">Mínimo: $0.06 (600 Oro)</span><br>
+            <input type="text" placeholder="Billetera USDT/BNB">
+            <input type="number" placeholder="Cantidad de Oro">
+            <button class="btn" style="width:100%">SOLICITAR RETIRO</button>
+        </div>
     </div>
 
     <div id="tab-menu" class="page">
-        <h2>MENÚ</h2>
-        <div class="drone-card"><div class="info"><span class="name">🔄 Intercambiador</span><span class="stats">Pasar Oro a Plata (+20%)</span></div></div>
-        <div class="drone-card"><div class="info"><span class="name">💳 Billetera</span><span class="stats">Retiros y Recargas</span></div></div>
+        <h2>SISTEMA</h2>
+        <div class="card" style="border: 1px solid var(--n-pink);"><div class="info"><span class="name">🎡 Ruleta de la Suerte</span><span class="stats">1 ticket por cada $10 recargados</span></div><button class="btn" style="background:var(--n-pink); color:white">JUGAR</button></div>
+        <div class="card"><div class="info"><span class="name">🔄 Intercambiador</span><span class="stats">Oro a Plata (+20% Bonus)</span></div><button class="btn">CAMBIAR</button></div>
+        <div class="card"><div class="info"><span class="name">📋 Referidos</span><span class="stats">500 Plata por cada amigo</span></div><button class="btn">COPIAR LINK</button></div>
     </div>
 </div>
 
 <nav id="nav-bar">
-    <div class="nav-item active" onclick="showTab('tab-mina', this)"><span class="nav-icon">⛏️</span>Mina</div>
-    <div class="nav-item" onclick="showTab('tab-tienda', this)"><span class="nav-icon">🛒</span>Tienda</div>
-    <div class="nav-item" onclick="showTab('tab-almacen', this)"><span class="nav-icon">📦</span>Almacén</div>
-    <div class="nav-item" onclick="showTab('tab-tareas', this)"><span class="nav-icon">📋</span>Tareas</div>
-    <div class="nav-item" onclick="showTab('tab-menu', this)"><span class="nav-icon">🔳</span>Menú</div>
+    <div class="nav-item active" onclick="nav('tab-mina', this)"><span class="nav-icon">⛏️</span>Mina</div>
+    <div class="nav-item" onclick="nav('tab-tienda', this)"><span class="nav-icon">🛒</span>Tienda</div>
+    <div class="nav-item" onclick="nav('tab-almacen', this)"><span class="nav-icon">📦</span>Almacén</div>
+    <div class="nav-item" onclick="nav('tab-wallet', this)"><span class="nav-icon">💳</span>Pagos</div>
+    <div class="nav-item" onclick="nav('tab-menu', this)"><span class="nav-icon">🔳</span>Menú</div>
 </nav>
 
 <script>
-    function showTab(tabId, element) {
+    function nav(id, el) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        element.classList.add('active');
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+    }
+
+    function toggleWallet(type) {
+        document.getElementById('area-recarga').style.display = type === 'recarga' ? 'block' : 'none';
+        document.getElementById('area-retiro').style.display = type === 'retiro' ? 'block' : 'none';
     }
 </script>
 </body>
-</html>
+    </html>
+    
