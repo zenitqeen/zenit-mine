@@ -3,243 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zenit Empire - Oficial</title>
+    <title>Zenit Empire Elite</title>
     <style>
-        :root { --n-blue: #00f2ff; --n-pink: #ff00d4; --bg: #05050a; --card: #10101a; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --n-blue: #00f2ff; --n-pink: #ff00d4; --bg: #05050a; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER - BALANCES REALES */
-        #top-bar { display: flex; justify-content: space-around; padding: 15px; background: #1a1a2e; border-bottom: 2px solid var(--n-pink); flex-shrink: 0; }
+        /* HEADER */
+        #top-bar { display: flex; justify-content: space-around; padding: 15px; background: #1a1a2e; border-bottom: 2px solid var(--n-pink); flex-shrink: 0; z-index: 100; }
         .balance-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--n-blue); text-align: center; }
         .balance-label { font-size: 0.6rem; text-transform: uppercase; color: #888; }
 
         /* CONTENEDOR DE PÁGINAS */
-        #main-container { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #main-container { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; position: relative; }
+        .page { display: none; width: 100%; }
+        .page.active { display: block; }
 
-        /* ESTILO DE TARJETAS Y BOTONES */
-        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        /* CARDS Y BOTONES */
+        .card { background: #10101a; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #222; }
         .info { flex-grow: 1; }
         .name { color: var(--n-pink); font-weight: bold; display: block; font-size: 0.9rem; }
         .stats { font-size: 0.75rem; color: #aaa; }
-        .btn { background: var(--n-blue); border: none; color: black; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn:active { transform: scale(0.95); filter: brightness(1.2); }
+        .btn { background: var(--n-blue); border: none; color: black; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* SECCIÓN MINA DINÁMICA */
+        /* MINA */
         .mina-box { text-align: center; }
-        .cristal-img { width: 140px; filter: drop-shadow(0 0 15px var(--n-blue)); margin-bottom: 15px; animation: float 3s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .drones-active-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; min-height: 50px; border: 1px dashed #333; }
-        .drone-unit { width: 45px; height: 45px; background: #1a1a2e; border: 1px solid var(--n-blue); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 8px; font-size: 18px; position: relative; }
-        .drone-unit span { font-size: 0.5rem; color: var(--n-blue); font-weight: bold; }
+        .cristal-img { width: 140px; filter: drop-shadow(0 0 15px var(--n-blue)); margin-bottom: 15px; }
+        #lista-drones { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; min-height: 50px; }
+        .drone-unit { width: 45px; height: 45px; background: #1a1a2e; border: 1px solid var(--n-blue); display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
 
-        /* RULETA PROFESIONAL */
+        /* RULETA */
         #ruleta-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; flex-direction: column; align-items: center; justify-content: center; }
-        .wheel-container { position: relative; width: 280px; height: 280px; }
-        .wheel-circle { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #222; box-shadow: 0 0 30px var(--n-pink); transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+        .wheel { width: 260px; height: 260px; border-radius: 50%; border: 6px solid var(--n-pink); transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
             background: conic-gradient(#ff00d4 0deg 45deg, #111 45deg 90deg, #00f2ff 90deg 135deg, #111 135deg 180deg, #ff00d4 180deg 225deg, #111 225deg 270deg, #00f2ff 270deg 315deg, #111 315deg 360deg);
         }
-        .wheel-arrow { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 40px; color: white; z-index: 10; text-shadow: 0 0 10px black; }
 
-        /* NAVEGACIÓN INFERIOR */
+        /* NAVEGACIÓN */
         #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
-        .nav-item { text-align: center; color: #555; font-size: 0.7rem; flex: 1; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { color: var(--n-blue); font-weight: bold; }
-        .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 2px; }
-
-        h2 { font-size: 1.1rem; border-left: 4px solid var(--n-pink); padding-left: 10px; margin-bottom: 20px; color: white; }
+        .nav-item { text-align: center; color: #555; font-size: 0.7rem; flex: 1; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .nav-item.active { color: var(--n-blue); }
+        .nav-icon { font-size: 1.5rem; display: block; }
     </style>
 </head>
 <body>
 
 <div id="top-bar">
-    <div><span class="balance-val" id="bal-plata">1,000.00</span><span class="balance-label">Plata (Compra)</span></div>
-    <div><span class="balance-val" id="bal-oro">0.00</span><span class="balance-label">Oro (Retiro)</span></div>
+    <div><span class="balance-val" id="b-plata">1,000</span><span class="balance-label">Plata</span></div>
+    <div><span class="balance-val" id="b-oro">0.00</span><span class="balance-label">Oro</span></div>
 </div>
 
 <div id="main-container">
-    
     <div id="p-mina" class="page active">
         <div class="mina-box">
-            <img src="cristal.png" class="cristal-img" id="img-cristal" alt="CRISTAL">
-            <div class="card" style="flex-direction:column; background: linear-gradient(180deg, #10101a 0%, #1a1a2e 100%);">
-                <span class="stats">CRISTALES GENERADOS</span>
-                <span id="txt-temp" style="font-size:2rem; font-weight:bold; color:var(--n-blue)">0.00</span>
+            <img src="cristal.png" class="cristal-img">
+            <div class="card" style="flex-direction:column">
+                <span class="stats">CRISTALES POR RECOLECTAR</span>
+                <span id="c-temp" style="font-size:1.8rem; font-weight:bold; color:var(--n-blue)">0.00</span>
             </div>
-            <p style="font-size:0.7rem; color:var(--n-pink); font-weight:bold; letter-spacing:2px; margin-top:20px">MI FLOTA DE DRONES</p>
-            <div id="lista-drones" class="drones-active-list">
-                </div>
+            <div id="lista-drones"></div>
         </div>
     </div>
 
     <div id="p-tienda" class="page">
-        <h2>CENTRO DE COMPRAS</h2>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 1</span><span class="stats">Producción: 42/h</span></div><button class="btn" onclick="buyDrone(1000, 'N1', 0.012)">1,000 P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 2</span><span class="stats">Producción: 221/h</span></div><button class="btn" onclick="buyDrone(30000, 'N2', 0.062)">30,000 P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 3</span><span class="stats">Producción: 1,160/h</span></div><button class="btn" onclick="buyDrone(55000, 'N3', 0.32)">55,000 P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 4</span><span class="stats">Producción: 6,091/h</span></div><button class="btn" onclick="buyDrone(150000, 'N4', 1.69)">150,000 P</button></div>
-        <div class="card"><div class="info"><span class="name">Dron Nivel 5</span><span class="stats">Producción: 31,979/h</span></div><button class="btn" onclick="buyDrone(625000, 'N5', 8.88)">625,000 P</button></div>
+        <h2>TIENDA</h2>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 1</span><span class="stats">Prod: 42/h</span></div><button class="btn" onclick="comprar(1000, 'N1', 0.01)">1,000 P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 2</span><span class="stats">Prod: 221/h</span></div><button class="btn" onclick="comprar(30000, 'N2', 0.06)">30k P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 3</span><span class="stats">Prod: 1,160/h</span></div><button class="btn" onclick="comprar(55000, 'N3', 0.32)">55k P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 4</span><span class="stats">Prod: 6,091/h</span></div><button class="btn" onclick="comprar(150000, 'N4', 1.69)">150k P</button></div>
+        <div class="card"><div class="info"><span class="name">Dron Nivel 5</span><span class="stats">Prod: 31,979/h</span></div><button class="btn" onclick="comprar(625000, 'N5', 8.88)">625k P</button></div>
     </div>
 
     <div id="p-almacen" class="page">
-        <h2>ALMACÉN CENTRAL</h2>
-        <div class="card" style="justify-content:center; text-align:center; flex-direction:column; padding:30px">
+        <h2>ALMACÉN</h2>
+        <div class="card" style="flex-direction:column; text-align:center">
             <span class="stats">CRISTALES EN STOCK</span>
-            <span id="txt-stock" style="font-size:2.5rem; font-weight:bold; color:white">0.00</span>
+            <span id="c-total" style="font-size:2rem; font-weight:bold">0.00</span>
         </div>
-        <button class="btn" style="width:100%; padding:18px; margin-bottom:15px; font-size:1rem" onclick="recolectar()">RECOLECTAR DE LA MINA</button>
-        <button class="btn" style="width:100%; padding:18px; background:var(--n-pink); color:white; font-size:1rem" onclick="vender()">VENDER CRISTALES (70% P / 30% O)</button>
+        <button class="btn" style="width:100%; margin-bottom:10px" onclick="recolectar()">RECOLECTAR</button>
+        <button class="btn" style="width:100%; background:var(--n-pink); color:white" onclick="vender()">VENDER (70/30)</button>
     </div>
 
     <div id="p-pagos" class="page">
-        <h2>BILLETERA Y RETIROS</h2>
+        <h2>BILLETERA</h2>
         <div style="display:flex; gap:10px; margin-bottom:20px">
-            <button class="btn" style="flex:1" onclick="switchPay('rec')">RECARGAR</button>
-            <button class="btn" style="flex:1; background:var(--n-pink); color:white" onclick="switchPay('ret')">RETIRAR</button>
+            <button class="btn" style="flex:1" onclick="document.getElementById('re').style.display='block'; document.getElementById('ret').style.display='none'">RECARGAR</button>
+            <button class="btn" style="flex:1; background:var(--n-pink); color:white" onclick="document.getElementById('re').style.display='none'; document.getElementById('ret').style.display='block'">RETIRAR</button>
         </div>
-        <div id="view-rec">
-            <p class="stats">Monto a recargar (USD):</p>
-            <input type="number" id="inp-rec" placeholder="Ej: 10" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:8px; margin-bottom:15px">
-            <div class="card" style="border:1px dashed var(--n-blue); flex-direction:column; align-items:flex-start">
-                <span class="name">DIRECCIÓN USDT (BEP20)</span>
-                <span class="stats" style="word-break:break-all">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</span>
-                <button class="btn" style="margin-top:10px; padding:5px 15px; font-size:0.7rem" onclick="alert('Copiado!')">COPIAR</button>
-            </div>
-        </div>
-        <div id="view-ret" style="display:none">
-            <input type="text" placeholder="Tu Billetera BEP20" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:8px; margin-bottom:10px">
-            <input type="number" placeholder="Cantidad de Oro" style="width:100%; padding:12px; background:#111; border:1px solid #333; color:white; border-radius:8px; margin-bottom:10px">
-            <button class="btn" style="width:100%; background:var(--n-pink); color:white">SOLICITAR RETIRO</button>
-        </div>
+        <div id="re"><div class="card" style="border-style:dashed">RED: BEP20<br>0xTuDireccionAqui</div></div>
+        <div id="ret" style="display:none"><input type="text" placeholder="Billetera" style="width:90%; padding:10px"><button class="btn" style="width:100%; margin-top:10px">RETIRAR</button></div>
     </div>
 
     <div id="p-menu" class="page">
-        <h2>OPCIONES DEL SISTEMA</h2>
-        <div class="card" style="border: 2px solid var(--n-pink)">
-            <div class="info"><span class="name">🎡 RULETA FORTUNA</span><span class="stats">Gana premios cada día</span></div>
-            <button class="btn" onclick="document.getElementById('ruleta-modal').style.display='flex'" style="background:var(--n-pink); color:white">ABRIR</button>
+        <h2>SISTEMA</h2>
+        <div class="card" style="border:1px solid var(--n-pink)">
+            <div class="info"><span class="name">🎡 RULETA</span><span class="stats">Gana premios</span></div>
+            <button class="btn" onclick="document.getElementById('ruleta-modal').style.display='flex'" style="background:var(--n-pink); color:white">JUGAR</button>
         </div>
-        <div class="card">
-            <div class="info"><span class="name">📋 SISTEMA DE REFERIDOS</span><span class="stats">Gana 10% de cada recarga</span></div>
-            <button class="btn" onclick="copyReferal()">COPIAR LINK</button>
-        </div>
-        <div class="card">
-            <div class="info"><span class="name">🔄 INTERCAMBIADOR</span><span class="stats">Oro a Plata (+20% Bonus)</span></div>
-            <button class="btn">ENTRAR</button>
-        </div>
+        <div class="card"><div class="info"><span class="name">📋 REFERIDOS</span><span class="stats">10% de comisión</span></div><button class="btn" onclick="alert('Link: zenit.com/ref/123')">COPIAR</button></div>
     </div>
 </div>
 
 <div id="ruleta-modal">
-    <div class="wheel-container">
-        <div class="wheel-arrow">▼</div>
-        <div id="wheel" class="wheel-circle"></div>
-    </div>
-    <button class="btn" id="btn-spin" onclick="spinWheel()" style="width:240px; padding:18px; margin-top:35px; font-size:1.2rem; background:var(--n-pink); color:white">¡PROBAR SUERTE!</button>
-    <button class="btn" onclick="document.getElementById('ruleta-modal').style.display='none'" style="background:none; color:#888; margin-top:20px">VOLVER ATRÁS</button>
+    <div style="color:white; font-size:30px">▼</div>
+    <div id="wheel" class="wheel"></div>
+    <button class="btn" onclick="girar()" style="width:200px; margin-top:30px">GIRAR</button>
+    <button class="btn" onclick="document.getElementById('ruleta-modal').style.display='none'" style="background:none; color:white; margin-top:15px">CERRAR</button>
 </div>
 
 <nav id="nav-bar">
-    <div class="nav-item active" onclick="nav('p-mina', this)"><span class="nav-icon">⛏️</span>Mina</div>
-    <div class="nav-item" onclick="nav('p-tienda', this)"><span class="nav-icon">🛒</span>Tienda</div>
-    <div class="nav-item" onclick="nav('p-almacen', this)"><span class="nav-icon">📦</span>Almacén</div>
-    <div class="nav-item" onclick="nav('p-pagos', this)"><span class="nav-icon">💳</span>Pagos</div>
-    <div class="nav-item" onclick="nav('p-menu', this)"><span class="nav-icon">🔳</span>Menú</div>
+    <div class="nav-item active" onclick="navegar('p-mina', this)"><span class="nav-icon">⛏️</span>Mina</div>
+    <div class="nav-item" onclick="navegar('p-tienda', this)"><span class="nav-icon">🛒</span>Tienda</div>
+    <div class="nav-item" onclick="navegar('p-almacen', this)"><span class="nav-icon">📦</span>Almacén</div>
+    <div class="nav-item" onclick="navegar('p-pagos', this)"><span class="nav-icon">💳</span>Pagos</div>
+    <div class="nav-item" onclick="navegar('p-menu', this)"><span class="nav-icon">🔳</span>Menú</div>
 </nav>
 
 <script>
-    // --- LÓGICA DE JUEGO (TODO FUNCIONANDO) ---
-    let plata = 1000;
-    let oro = 0;
-    let stockMina = 0;
-    let stockAlmacen = 0;
-    let produccionTotal = 0.01; // Empieza con algo de minado base
+    let p = 1000; let o = 0; let ct = 0; let cst = 0; let prod = 0.01;
 
-    // Reloj Global: Mina cristales cada segundo automáticamente
-    setInterval(() => {
-        stockMina += produccionTotal;
-        document.getElementById('txt-temp').innerText = stockMina.toFixed(2);
-    }, 1000);
+    // EL RELOJ DE MINADO (Sube solo cada segundo)
+    setInterval(() => { ct += prod; document.getElementById('c-temp').innerText = ct.toFixed(2); }, 1000);
 
-    // Navegación entre pestañas
-    function nav(id, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    // FUNCIÓN PARA CAMBIAR DE PÁGINA (Ahora sí funciona jefa!)
+    function navegar(id, el) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     }
 
-    // Comprar drones y sumarlos a la mina
-    function buyDrone(precio, nivel, prod) {
-        if(plata >= precio) {
-            plata -= precio;
-            produccionTotal += prod;
-            updateUI();
-            const lista = document.getElementById('lista-drones');
-            lista.innerHTML += `<div class="drone-unit">🛰️<span>${nivel}</span></div>`;
-            alert("¡Dron " + nivel + " comprado! Tu producción aumentó.");
-        } else {
-            alert("No tienes suficiente Plata.");
-        }
+    function comprar(costo, nivel, suma) {
+        if(p >= costo) {
+            p -= costo; prod += suma; update();
+            document.getElementById('lista-drones').innerHTML += `<div class="drone-unit">🛸</div>`;
+            alert("¡Dron " + nivel + " activado!");
+        } else { alert("Falta Plata"); }
     }
 
-    // Almacén: Recolectar de la mina
-    function recolectar() {
-        if(stockMina <= 0) return alert("Nada que recolectar.");
-        stockAlmacen += stockMina;
-        stockMina = 0;
-        document.getElementById('txt-stock').innerText = stockAlmacen.toFixed(2);
-        document.getElementById('txt-temp').innerText = "0.00";
-    }
+    function recolectar() { cst += ct; ct = 0; document.getElementById('c-total').innerText = cst.toFixed(2); }
 
-    // Almacén: Vender cristales (70/30)
     function vender() {
-        if(stockAlmacen < 100) return alert("Mínimo para vender: 100 cristales.");
-        let totalGanado = stockAlmacen / 100; // Ejemplo: 100 cristales = 1 Plata/Oro
-        plata += totalGanado * 0.70;
-        oro += totalGanado * 0.30;
-        stockAlmacen = 0;
-        document.getElementById('txt-stock').innerText = "0.00";
-        updateUI();
-        alert("Venta completada. Plata y Oro añadidos.");
+        if(cst < 100) return alert("Mínimo 100");
+        p += (cst/100)*0.7; o += (cst/100)*0.3; cst = 0; update();
+        document.getElementById('c-total').innerText = "0.00";
     }
 
-    // Actualizar balances arriba
-    function updateUI() {
-        document.getElementById('bal-plata').innerText = plata.toLocaleString(undefined, {minimumFractionDigits: 2});
-        document.getElementById('bal-oro').innerText = oro.toLocaleString(undefined, {minimumFractionDigits: 2});
+    function update() {
+        document.getElementById('b-plata').innerText = p.toFixed(2);
+        document.getElementById('b-oro').innerText = o.toFixed(2);
     }
 
-    // Ruleta: Giro y Premios
-    function spinWheel() {
-        const b = document.getElementById('btn-spin');
+    function girar() {
         const w = document.getElementById('wheel');
-        b.disabled = true;
-        const deg = Math.floor(Math.random() * 360) + 1800; // 5 vueltas
+        const deg = Math.floor(Math.random() * 360) + 1800;
         w.style.transform = `rotate(${deg}deg)`;
-        
-        setTimeout(() => {
-            const premios = ["100 Plata", "50 Oro", "Ticket Recarga", "10 Oro", "Dron N1", "500 Plata", "Sigue intentando", "Ticket VIP"];
-            alert("🎯 ¡RESULTADO: " + premios[Math.floor(Math.random() * premios.length)] + "!");
-            b.disabled = false;
-        }, 4000);
-    }
-
-    // Cambiar pantallas de pago
-    function switchPay(t) {
-        document.getElementById('view-rec').style.display = t === 'rec' ? 'block' : 'none';
-        document.getElementById('view-ret').style.display = t === 'ret' ? 'block' : 'none';
-    }
-
-    // Referidos
-    function copyReferal() {
-        const link = "https://zenitempire.com/ref/usuario123";
-        alert("¡Tu link de referido ha sido copiado!\n" + link);
+        setTimeout(() => { alert("¡Suerte!"); }, 4100);
     }
 </script>
-
 </body>
-                                                                                                                                           </html>
-            
+    </html>
+                
