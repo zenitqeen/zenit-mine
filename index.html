@@ -13,39 +13,40 @@
         .balance-val { display: block; font-size: 1.1rem; font-weight: bold; color: var(--n-blue); text-align: center; }
         .balance-label { font-size: 0.6rem; text-transform: uppercase; color: #888; }
 
-        /* CONTENEDOR */
+        /* CONTENEDOR DE PÁGINAS */
         #main-container { flex-grow: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; position: relative; }
         .page { display: none; width: 100%; }
         .page.active { display: block; }
 
         /* TITULOS */
-        .mina-title { border-left: 4px solid var(--n-blue); padding-left: 10px; font-size: 1.4rem; font-weight: bold; text-align: left; margin-bottom: 20px; text-transform: uppercase; }
+        .section-title { border-left: 4px solid var(--n-blue); padding-left: 10px; font-size: 1.4rem; font-weight: bold; text-align: left; margin-bottom: 20px; text-transform: uppercase; }
         .pink-title { border-left-color: var(--n-pink); }
 
-        /* MINA Y DRONES */
+        /* MINA (BLOQUEADOS) */
         .cristal-img { width: 100px; filter: drop-shadow(0 0 15px var(--n-blue)); margin: 10px auto; display: block; }
-        .counter-card { background: #10101a; border-radius: 15px; padding: 20px; margin: 20px 0; border: 1px solid #222; text-align: center; }
-        .drones-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .counter-card { background: #10101a; border-radius: 15px; padding: 20px; border: 1px solid #222; text-align: center; margin-bottom: 20px; }
+        .drones-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .drone-slot { aspect-ratio: 1/1; background: rgba(255,255,255,0.03); border: 1px solid #222; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .drone-slot.locked { filter: grayscale(1); opacity: 0.3; }
+        .drone-slot.locked { filter: grayscale(1); opacity: 0.4; }
         .drone-slot.locked::after { content: '🔒'; position: absolute; bottom: 5px; right: 5px; font-size: 10px; }
         .drone-slot.active { border-color: var(--n-blue); filter: none; opacity: 1; }
-        .drone-ico { width: 40px; }
+        .drone-ico { width: 35px; }
 
-        /* TIENDA */
+        /* TIENDA (A COLOR) */
         .shop-card { background: #12121f; border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; border: 1px solid #1a1a2e; gap: 12px; }
         .shop-img { width: 50px; height: 50px; filter: drop-shadow(0 0 5px var(--n-pink)); }
         .shop-info { flex-grow: 1; }
-        .name { color: var(--n-pink); font-weight: bold; font-size: 0.9rem; }
-        .buy-btn { background: var(--n-blue); color: #000; border: none; border-radius: 10px; padding: 10px 12px; font-weight: bold; min-width: 90px; }
+        .shop-name { color: var(--n-pink); font-weight: bold; font-size: 0.9rem; }
+        .buy-btn { background: var(--n-blue); color: #000; border: none; border-radius: 10px; padding: 10px 12px; font-weight: bold; min-width: 90px; cursor: pointer; }
 
-        /* ESTILOS GENERALES PARA BILLETERA Y MENÚ */
+        /* CARDS PARA BILLETERA Y MENÚ (RECUPERADAS) */
         .card { background: #10101a; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #222; }
-        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .card-label { font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .btn-full { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 5px; }
 
         /* NAVEGACIÓN */
         #nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #0a0a15; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; }
-        .nav-item { text-align: center; color: #555; font-size: 0.7rem; flex: 1; }
+        .nav-item { text-align: center; color: #555; font-size: 0.7rem; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--n-blue); }
     </style>
 </head>
@@ -59,75 +60,86 @@
 <div id="main-container">
     
     <div id="p-mina" class="page active">
-        <div class="mina-title">Mina de Cristales</div>
+        <div class="section-title">MINA DE CRISTALES</div>
         <img src="cristal.png" class="cristal-img">
         <div class="counter-card">
             <span id="c-temp" style="font-size:2.2rem; font-weight:bold;">0.00</span>
         </div>
         <div class="drones-grid">
-            <div class="drone-slot locked" id="slot-N1"><img src="dron.png" class="drone-ico"></div>
-            <div class="drone-slot locked" id="slot-N2"><img src="dron.png" class="drone-ico"></div>
-            <div class="drone-slot locked" id="slot-N3"><img src="dron.png" class="drone-ico"></div>
+            <div class="drone-slot locked" id="slot-N1"><img src="dron.png" class="drone-ico"><small>N1</small></div>
+            <div class="drone-slot locked" id="slot-N2"><img src="dron.png" class="drone-ico"><small>N2</small></div>
+            <div class="drone-slot locked" id="slot-N3"><img src="dron.png" class="drone-ico"><small>N3</small></div>
         </div>
     </div>
 
     <div id="p-tienda" class="page">
-        <div class="mina-title pink-title">Tienda</div>
+        <div class="section-title pink-title">TIENDA</div>
         <div class="shop-card">
             <img src="dron.png" class="shop-img">
-            <div class="shop-info"><span class="name">Dron Nivel 1</span><br><small>42 cristales/h</small></div>
+            <div class="shop-info"><span class="shop-name">Dron Nivel 1</span><br><small>Prod: 42/h</small></div>
             <button class="buy-btn" onclick="comprar(1000, 'N1', 0.012)">1,000 P</button>
         </div>
-    </div>
+        </div>
 
     <div id="p-almacen" class="page">
-        <div class="mina-title">Almacén</div>
+        <div class="section-title">ALMACÉN</div>
         <div class="card" style="text-align:center;">
+            <span class="card-label">Cristales en Stock</span>
             <span id="c-total" style="font-size:2rem; font-weight:bold">0.00</span>
         </div>
-        <button class="btn" style="background:var(--n-blue)" onclick="recolectar()">RECOLECTAR</button>
-        <button class="btn" style="background:var(--n-pink); color:white" onclick="vender()">VENDER (70/30)</button>
+        <button class="btn-full" style="background:var(--n-blue)" onclick="recolectar()">RECOLECTAR</button>
+        <button class="btn-full" style="background:var(--n-pink); color:white; margin-top:10px;" onclick="vender()">VENDER (70/30)</button>
     </div>
 
     <div id="p-pagos" class="page">
-        <div class="mina-title">Billetera</div>
+        <div class="section-title">BILLETERA</div>
         <div class="card">
-            <p style="font-size:0.8rem; color:var(--n-blue)">RECARGAR USDT (BEP20)</p>
-            <code style="font-size:0.7rem;">0x7949563728929929292...</code>
-            <button class="btn" style="background:#222; color:white" onclick="alert('Copiado')">COPIAR ADDR</button>
+            <span class="card-label" style="color:var(--n-blue)">Depósito USDT (BEP20)</span>
+            <code style="display:block; background:#000; padding:10px; border-radius:5px; font-size:0.7rem; margin-bottom:10px;">0x7949563728929929292...</code>
+            <button class="btn-full" style="background:#222; color:white" onclick="alert('Copiado')">COPIAR DIRECCIÓN</button>
         </div>
         <div class="card">
-            <p style="font-size:0.8rem; color:var(--n-pink)">RETIRAR ORO</p>
-            <input type="number" placeholder="Cantidad" style="width:90%; padding:10px; background:#000; color:white; border:1px solid #333; border-radius:5px;">
-            <button class="btn" style="background:var(--n-pink); color:white">SOLICITAR RETIRO</button>
+            <span class="card-label" style="color:var(--n-pink)">Retirar Saldo Oro</span>
+            <input type="number" placeholder="Monto a retirar" style="width:95%; padding:12px; background:#000; color:white; border:1px solid #333; border-radius:8px;">
+            <button class="btn-full" style="background:var(--n-pink); color:white">SOLICITAR RETIRO</button>
         </div>
     </div>
 
     <div id="p-menu" class="page">
-        <div class="mina-title pink-title">Sistema</div>
+        <div class="section-title pink-title">SISTEMA Y TAREAS</div>
         <div class="card">
-            <p>RULETA DIARIA</p>
-            <button class="btn" style="background:var(--n-blue)" onclick="alert('Girando...')">GIRAR GRATIS</button>
+            <span class="card-label">🎰 Ruleta Diaria</span>
+            <button class="btn-full" style="background:var(--n-blue)" onclick="alert('Girando...')">GIRAR GRATIS</button>
         </div>
         <div class="card">
-            <p>PROGRAMA DE REFERIDOS</p>
-            <button class="btn" style="background:#333; color:white" onclick="alert('Link copiado')">COPIAR LINK</button>
+            <span class="card-label">📢 Tareas Sociales</span>
+            <button class="btn-full" style="background:#0088cc; color:white">UNIRSE AL TELEGRAM (+100 P)</button>
+        </div>
+        <div class="card">
+            <span class="card-label">👥 Invitaciones</span>
+            <button class="btn-full" style="background:#333; color:white" onclick="alert('Link copiado')">COPIAR LINK DE REFERIDO</button>
         </div>
     </div>
 
 </div>
 
 <nav id="nav-bar">
-    <div class="nav-item active" onclick="navegar('p-mina', this)">Mina</div>
-    <div class="nav-item" onclick="navegar('p-tienda', this)">Tienda</div>
-    <div class="nav-item" onclick="navegar('p-almacen', this)">Almacén</div>
-    <div class="nav-item" onclick="navegar('p-pagos', this)">Billetera</div>
-    <div class="nav-item" onclick="navegar('p-menu', this)">Menú</div>
+    <div class="nav-item active" onclick="navegar('p-mina', this)">MINA</div>
+    <div class="nav-item" onclick="navegar('p-tienda', this)">TIENDA</div>
+    <div class="nav-item" onclick="navegar('p-almacen', this)">STOCK</div>
+    <div class="nav-item" onclick="navegar('p-pagos', this)">PAGOS</div>
+    <div class="nav-item" onclick="navegar('p-menu', this)">MENÚ</div>
 </nav>
 
 <script>
     let p = 1000, o = 0, ct = 0, cst = 0, prod = 0;
-    setInterval(() => { if(prod > 0) { ct += prod; document.getElementById('c-temp').innerText = ct.toFixed(2); } }, 1000);
+
+    setInterval(() => { 
+        if(prod > 0) { 
+            ct += prod; 
+            document.getElementById('c-temp').innerText = ct.toFixed(2); 
+        } 
+    }, 1000);
 
     function navegar(id, el) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -142,6 +154,7 @@
             document.getElementById('b-plata').innerText = p.toFixed(2);
             let slot = document.getElementById('slot-' + nivel);
             if(slot) { slot.classList.remove('locked'); slot.classList.add('active'); }
+            alert("¡Dron activado!");
         } else { alert("Saldo insuficiente"); }
     }
 
@@ -155,5 +168,5 @@
     }
 </script>
 </body>
-                                                                                                               </html>
+    </html>
     
